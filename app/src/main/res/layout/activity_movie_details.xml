@@ -7,6 +7,7 @@
     tools:context=".views.MovieDetails">
 
     <ScrollView
+        android:id="@+id/scrollerMovieDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -76,6 +77,16 @@
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
+
+    <ImageButton
+        android:id="@+id/favoriteButton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/favorite_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

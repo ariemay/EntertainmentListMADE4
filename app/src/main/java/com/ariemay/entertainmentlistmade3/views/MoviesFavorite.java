@@ -13,6 +13,7 @@ public class MoviesFavorite extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
