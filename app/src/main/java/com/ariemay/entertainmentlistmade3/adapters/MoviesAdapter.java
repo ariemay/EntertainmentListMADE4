@@ -54,7 +54,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     public void onBindViewHolder(@NonNull MoviesViewHolder viewHolder, final int i) {
         Glide.with(context)
                 .load(movies.get(i).getPoster_path())
-                .apply(new RequestOptions().override(150,150))
+                .apply(new RequestOptions().override(150, 150))
                 .into(viewHolder.poster);
 
         viewHolder.date.setText(movies.get(i).getRelease_date());

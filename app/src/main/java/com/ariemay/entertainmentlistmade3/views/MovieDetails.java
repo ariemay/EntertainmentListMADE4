@@ -1,17 +1,28 @@
 package com.ariemay.entertainmentlistmade3.views;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.ariemay.entertainmentlistmade3.R;
+import com.ariemay.entertainmentlistmade3.databases.DBContract;
+import com.ariemay.entertainmentlistmade3.databases.DBHelper;
 import com.ariemay.entertainmentlistmade3.databases.ShowHelper;
 import com.ariemay.entertainmentlistmade3.models.Movies;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+
+import static com.ariemay.entertainmentlistmade3.databases.DBContract.TABLE_MOVIE;
 
 public class MovieDetails extends AppCompatActivity {
 
@@ -19,25 +30,23 @@ public class MovieDetails extends AppCompatActivity {
 
     TextView name, genre, date, actor, description;
     ImageView poster;
-    ImageButton favoriteButton;
+    ToggleButton favoriteButton;
 
-
-    private Movies movies;
-    private SQLiteDatabase database;
     private ShowHelper showHelper;
+    private Movies movies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        Movies movies = getIntent().getParcelableExtra(EXTRA_DATA);
+        movies = getIntent().getParcelableExtra(EXTRA_DATA);
 
         poster = findViewById(R.id.detail_movie_poster);
         name = findViewById(R.id.detail_movie_name);
         date = findViewById(R.id.detail_date);
         description = findViewById(R.id.description);
-        favoriteButton = findViewById(R.id.favoriteButton);
+        favoriteButton = findViewById(R.id.button_favorite);
 
         Glide.with(getApplicationContext())
                 .load(movies.getBackdrop_path())
@@ -49,80 +58,76 @@ public class MovieDetails extends AppCompatActivity {
         date.setText(movies.getRelease_date());
         description.setText(movies.getOverview());
 
-        if (Exist(movies.getTitle())){
-            favoriteButton.setFavorite(true);
-            materialFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
+        if (Exist(movies.getTitle())) {
+            favoriteButton.setChecked(true);
+            Log.d("EXIST", "movies exist");
+            favoriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                    if (favorite){
-                        saveFavorite();
-                        Snackbar.make(buttonView,"Added to Favorite",Snackbar.LENGTH_SHORT).show();
-                    }else {
-                        int movie_id = movie.getId();
-                        movieHelper = new MovieHelper(MovieDetailActivity.this);
-                        movieHelper.open();
-                        movieHelper.deleteMovie(movie_id);
-                        movieHelper.close();
-                        Snackbar.make(buttonView,"Removed from Favorite",Snackbar.LENGTH_SHORT).show();
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if (!isChecked) {
+                        int movie_id = movies.getId();
+                        showHelper = new ShowHelper(MovieDetails.this);
+                        showHelper.open();
+                        showHelper.deleteMovie(movie_id);
+                        showHelper.close();
+                        Toast.makeText(getApplicationContext(), "Removed", Toast.LENGTH_LONG).show();
+                        favoriteButton.setChecked(false);
                     }
                 }
             });
-        }else {
-            materialFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
+        } else {
+            favoriteButton.setChecked(false);
+            Log.d("NO EXIST", "no movies exist");
+            favoriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                    if (favorite) {
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if (isChecked) {
+                        Log.d("CHECKED 2", "checked");
                         saveFavorite();
-                        Snackbar.make(buttonView, "Added to Favorite", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        int movie_id = movie.getId();
-                        movieHelper = new MovieHelper(MovieDetailActivity.this);
-                        movieHelper.open();
-                        movieHelper.deleteMovie(movie_id);
-                        movieHelper.close();
-                        Snackbar.make(buttonView, "Removed from Favorite", Snackbar.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+                        favoriteButton.setChecked(true);
                     }
                 }
             });
+
         }
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     private void saveFavorite() {
-        movieHelper=new MovieHelper(this);
-        String thumbnail=movie.getPoster();
-        String movieName=movie.getName();
-        String synopsis=movie.getOverview();
-        Double rating=movie.getRate();
+        Log.d("POSTER", "saveFavorite: " + movies.getPoster_path());
+        showHelper = new ShowHelper(this);
+        String poster = movies.getPoster_path();
+        String detailPoster = movies.getBackdrop_path();
+        String movieName = movies.getTitle();
+        int movieVote = movies.getVote_average();
+        String overview = movies.getOverview();
+        String releaseDate = movies.getRelease_date();
 
-        movie.setName(movieName);
-        movie.setOverview(synopsis);
-        movie.setPoster(thumbnail);
-        movie.setRate(rating);
+        movies.setTitle(movieName);
+        movies.setOverview(overview);
+        movies.setPoster_path(poster);
+        movies.setBackdrop_path(detailPoster);
+        movies.setRelease_date(releaseDate);
+        movies.setVote_average(movieVote);
 
-        movieHelper.open();
-        movieHelper.insertMovie(movie);
-        movieHelper.close();
+        showHelper.open();
+        showHelper.insertMovie(movies);
+        showHelper.close();
     }
 
     public boolean Exist(String item){
-        String pilih= DatabaseContract.MovieColumns.TITLE+" =?";
-        String[] pilihArg={item};
+        String selected = DBContract.MovieColumns.TITLE_MOVIE+" =?";
+        String[] selectedArgs={item};
         String limit="1";
-        movieHelper= new MovieHelper(this);
-        movieHelper.open();
-        DatabaseHelper dataBaseHelper= new DatabaseHelper(MovieDetailActivity.this);
-        database = dataBaseHelper.getWritableDatabase();
-        Cursor cursor= database.query(TABLE_MOVIE,null,pilih,pilihArg,null,null,null,limit);
+        showHelper= new ShowHelper(this);
+        showHelper.open();
+        DBHelper dataBaseHelper= new DBHelper(MovieDetails.this);
+        SQLiteDatabase database = dataBaseHelper.getWritableDatabase();
+        Cursor cursor= database.query(TABLE_MOVIE,null,selected,selectedArgs,null,null,null,limit);
         boolean exists;
         exists=(cursor.getCount() > 0);
         cursor.close();
-        movieHelper.close();
+        showHelper.close();
         return exists;
     }
 }

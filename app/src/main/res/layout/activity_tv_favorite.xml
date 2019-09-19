@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".views.TvFavorite">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_tv_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </android.support.v7.widget.RecyclerView>
+
 </android.support.constraint.ConstraintLayout>

@@ -6,9 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static String DATABASE_NAME = "dbmovieapp";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String SQL_CREATE_TABLE_MOVIE = String.format("CREATE TABLE %s"
                     + " (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    " %s INTEGER NOT NULL," +
+                    " %s TEXT NOT NULL," +
                     " %s INTEGER NOT NULL," +
                     " %s TEXT NOT NULL," +
                     " %s TEXT NOT NULL," +
@@ -27,6 +29,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_TV = String.format("CREATE TABLE %s"
                     + " (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
                     " %s INTEGER NOT NULL," +
+                    " %s TEXT NOT NULL," +
+                    " %s TEXT NOT NULL," +
                     " %s TEXT NOT NULL," +
                     " %s TEXT NOT NULL," +
                     " %s TEXT NOT NULL," +

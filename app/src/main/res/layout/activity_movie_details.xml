@@ -78,15 +78,19 @@
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-    <ImageButton
-        android:id="@+id/favoriteButton"
+    <ToggleButton
+        android:id="@+id/button_favorite"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/favorite_image"
+        android:background="@drawable/button_favorite"
+        android:checked="false"
+        android:text=""
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>

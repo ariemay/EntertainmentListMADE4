@@ -78,6 +78,7 @@ public class ShowHelper {
                 movies.setId(cursor.getInt(cursor.getColumnIndexOrThrow(ID_MOVIE)));
                 movies.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE_MOVIE)));
                 movies.setVote_average(cursor.getInt(cursor.getColumnIndexOrThrow(VOTE_AVERAGE_MOVIE)));
+                movies.setOverview(cursor.getString(cursor.getColumnIndexOrThrow(OVERVIEW_MOVIE)));
                 movies.setRelease_date(cursor.getString(cursor.getColumnIndexOrThrow(RELEASE_DATE_MOVIE)));
                 movies.setPoster_path(cursor.getString(cursor.getColumnIndexOrThrow(POSTER_PATH_MOVIE)));
                 movies.setBackdrop_path(cursor.getString(cursor.getColumnIndexOrThrow(BACKDROP_PATH_MOVIE)));
