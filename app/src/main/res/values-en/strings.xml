@@ -147,4 +147,5 @@
     <string name="loading">Please wait, fetching data</string>
     <string name="rating">6.2</string>
     <string name="textRating">Rating:</string>
+    <string name="favorite">Favorite</string>
 </resources>
